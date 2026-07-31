@@ -1,0 +1,8 @@
+{
+	"name": "roman-project-manager",
+	"private": true,
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {},
+	"packageManager": "pnpm@11.18.0"
+}
