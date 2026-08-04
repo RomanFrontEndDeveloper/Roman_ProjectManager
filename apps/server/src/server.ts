@@ -1,8 +1,9 @@
+import app from './app.js';
 import { env } from './config/env.js';
 
-console.log('PORT:', env.PORT);
-console.log('Mongo:', env.MONGODB_URI);
-console.log('JWT:', env.JWT_SECRET);
-console.log('Client:', env.CLIENT_URL);
+app.listen(env.PORT, () => {
+	console.log(`Server is running on http://localhost:${env.PORT}`);
+});
 
-console.log('Server is running...');
+// Origin складається з трьох частин: Protocol + Domain + Port
+// приклад: http://localhost:3000
