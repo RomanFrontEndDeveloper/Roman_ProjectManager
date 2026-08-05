@@ -5,6 +5,7 @@ import { env } from './config/env.js';
 import { globalRateLimit } from './middlewares/rateLimit.js';
 import morgan from 'morgan';
 import { errorHandler } from './middlewares/errorHandler.js';
+import authRoutes from './features/auth/routes/auth.routes.js';
 
 // Morgan — middleware для логування HTTP-запитів.
 // Він показує метод, маршрут, статус і час виконання.
@@ -28,9 +29,19 @@ app.use(morgan('dev'));
 // Дозволяє фронтенду з http://localhost:3000 надсилати HTTP-запити до цього
 //  Express-сервера (налаштовує CORS).
 
+app.use(express.json());
+
 app.get('/', (_, res) => {
 	res.send('Roman Project Manager API');
 });
+// app.get() — створює маршрут для GET-запиту.
+// '/' — головний маршрут (http://localhost:5000/).
+// _ — об'єкт request, який тут не використовується.
+// res — об'єкт відповіді клієнту.
+// res.send() — відправляє текстову відповідь.
+// Тобто: коли користувач відкриває http://localhost:5000/, сервер
+// повертає текст
+// Roman Project Manager API.
 
 app.get('/health', (_, res) => {
 	res.status(200).json({
@@ -40,19 +51,12 @@ app.get('/health', (_, res) => {
 	});
 });
 
+app.use('/api/auth', authRoutes);
+
 // Завжди останнім
 app.use(errorHandler);
 
 export default app;
-
-// app.get() — створює маршрут для GET-запиту.
-// '/' — головний маршрут (http://localhost:5000/).
-// _ — об'єкт request, який тут не використовується.
-// res — об'єкт відповіді клієнту.
-// res.send() — відправляє текстову відповідь.
-// Тобто: коли користувач відкриває http://localhost:5000/, сервер
-// повертає текст
-// Roman Project Manager API.
 
 // 304 - Запитуваний ресурс не змінився з моменту останнього
 //  запиту, тому браузер може використати свою кешовану копію.

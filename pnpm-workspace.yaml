@@ -1,7 +1,9 @@
 packages:
     - 'apps/*'
     - 'packages/*'
-allowBuilds: # дозволяє pnpm виконувати postinstall/build-скрипти для цих пакетів (esbuild, sharp, unrs-resolver).
+allowBuilds:
+    # дозволяє pnpm виконувати postinstall/build-скрипти для цих пакетів (esbuild, sharp, unrs-resolver).
+    bcrypt: true
     esbuild: true
     sharp: true
     unrs-resolver: true

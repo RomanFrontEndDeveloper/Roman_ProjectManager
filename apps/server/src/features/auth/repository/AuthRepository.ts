@@ -1,9 +1,13 @@
+import { UserModel } from '../models/UserModel.js';
+//js - Тому що після компіляції TypeScript Node.js
+// запускає не .ts, а скомпільовані .js файли.
+
 export class AuthRepository {
-	public createUser() {
-		console.log('Creating user in database...');
+	public async create(userData: any) {
+		return await UserModel.create(userData);
 	}
 
-	public findUserByEmail() {
-		console.log('Finding user...');
+	public async findByEmail(email: string) {
+		return await UserModel.findOne({ email });
 	}
 }
