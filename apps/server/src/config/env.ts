@@ -6,7 +6,8 @@ const envSchema = z.object({
 	// Візьми PORT із .env, перетвори його в число,
 	//  а якщо його немає — використовуй порт 5000.
 	MONGODB_URI: z.string().min(1),
-	JWT_SECRET: z.string().min(1),
+	JWT_SECRET: z.string(),
+	JWT_REFRESH_SECRET: z.string(),
 	CLIENT_URL: z.string().url(),
 });
 

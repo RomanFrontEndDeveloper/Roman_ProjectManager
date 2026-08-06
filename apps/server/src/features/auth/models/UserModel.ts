@@ -52,8 +52,8 @@ const userSchema = new Schema<IUser>(
 );
 
 export const UserModel = model<IUser>('User', userSchema);
-// Створи модель UserModel на основі схеми userSchema, яка буде працювати з колекцією
-//users у MongoDB і через яку можна створювати, шукати, оновлювати та видаляти документи.
+// Створи модель UserModel на основі схеми userSchema. Вона буде працювати з колекцією
+// users у MongoDB, а всі документи цієї моделі повинні відповідати інтерфейсу IUser.
 
 // Schema описує структуру документа.
 // Model використовується для роботи з колекцією MongoDB.

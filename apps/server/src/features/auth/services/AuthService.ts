@@ -1,6 +1,10 @@
 import { AuthRepository } from '../repository/AuthRepository.js';
 import type { RegisterDto } from '../dto/RegisterDto.js';
 import bcrypt from 'bcrypt';
+import { generateToken } from '../utils/generateToken.js';
+import { generateRefreshToken } from '../utils/generateRefreshToken.js';
+import jwt from 'jsonwebtoken';
+import { env } from '../../../config/env.js';
 export class AuthService {
 	private authRepository = new AuthRepository();
 
@@ -32,8 +36,32 @@ export class AuthService {
 			throw new Error('Invalid email or password');
 		}
 
-		return user;
+		const accessToken = generateToken(user._id.toString());
+
+		const refreshToken = generateRefreshToken(user._id.toString());
+
+		return {
+			user,
+			accessToken,
+			refreshToken,
+		};
 	}
+
+	public async refresh(refreshToken: string) {
+		const payload = jwt.verify(refreshToken, env.JWT_REFRESH_SECRET) as {
+			id: string;
+		};
+		// Перевіряє: чи токен справжній;
+		// чи підписаний правильним секретним ключем (JWT_REFRESH_SECRET);
+		// чи не закінчився його термін дії.
+
+		const accessToken = generateToken(payload.id);
+		// Тут створюється новий Access Token.
+
+		return accessToken;
+	}
+	// 	Метод повертає новий Access Token.
+	// Потім Controller відправить його клієнту:
 
 	async findUserByEmail(email: string) {
 		return this.authRepository.findByEmail(email);
