@@ -5,6 +5,7 @@ import { generateToken } from '../utils/generateToken.js';
 import { generateRefreshToken } from '../utils/generateRefreshToken.js';
 import jwt from 'jsonwebtoken';
 import { env } from '../../../config/env.js';
+
 export class AuthService {
 	private authRepository = new AuthRepository();
 

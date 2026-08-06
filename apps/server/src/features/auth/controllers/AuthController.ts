@@ -17,30 +17,38 @@ export class AuthController {
 		try {
 			const { email, password } = req.body;
 
+			// Отримуємо з AuthService користувача та згенеровані токени.
 			const { user, accessToken, refreshToken } =
 				await this.authService.login(email, password);
 
+			// Зберігаємо refreshToken в HttpOnly cookie,
+			// щоб браузер автоматично надсилав його при наступних запитах.
+			res.cookie('refreshToken', refreshToken, {
+				httpOnly: true,
+				secure: false, // true у production
+				sameSite: 'lax', // Захищає від більшості CSRF-атак,
+				// обмежуючи надсилання cookie між сайтами.
+				maxAge: 7 * 24 * 60 * 60 * 1000,
+			});
+
+			// Відправляємо клієнту дані користувача та accessToken.
+			// refreshToken не повертаємо в JSON, оскільки він уже збережений у cookie.
 			res.json({
 				success: true,
 				user,
 				accessToken,
-				refreshToken,
 			});
-			// Тобто вгорі ти отримуєш значення з об'єкта, а внизу ти відправляєш
-			// ці ж самі значення клієнту у відповіді. Це не дублювання даних,
-			// а дві різні операції: спочатку читання, потім відправлення.
 		} catch (error) {
 			next(error);
 		}
 	};
-
 	public refresh = async (
 		req: Request,
 		res: Response,
 		next: NextFunction,
 	) => {
 		try {
-			const { refreshToken } = req.body;
+			const refreshToken = req.cookies.refreshToken;
 
 			const accessToken = await this.authService.refresh(refreshToken);
 

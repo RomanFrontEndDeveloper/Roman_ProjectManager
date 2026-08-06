@@ -6,6 +6,7 @@ import { globalRateLimit } from './middlewares/rateLimit.js';
 import morgan from 'morgan';
 import { errorHandler } from './middlewares/errorHandler.js';
 import authRoutes from './features/auth/routes/auth.routes.js';
+import cookieParser from 'cookie-parser';
 
 // Morgan — middleware для логування HTTP-запитів.
 // Він показує метод, маршрут, статус і час виконання.
@@ -17,9 +18,10 @@ app.use(helmet());
 app.use(
 	cors({
 		origin: env.CLIENT_URL,
+		credentials: true,
+		// Дозволяє браузеру надсилати та отримувати cookie.
 	}),
 );
-
 app.use(globalRateLimit); // кожен HTTP-запит спочатку проходить через
 //  globalRateLimit, і лише потім потрапляє в маршрути.
 
@@ -30,6 +32,7 @@ app.use(morgan('dev'));
 //  Express-сервера (налаштовує CORS).
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (_, res) => {
 	res.send('Roman Project Manager API');
