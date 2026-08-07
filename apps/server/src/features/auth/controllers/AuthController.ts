@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import type { RegisterDto } from '../dto/RegisterDto.js';
 import { AuthService } from '../services/AuthService.js';
+import type { AuthRequest } from '../types/AuthRequest.js';
 
 export class AuthController {
 	private authService = new AuthService();
@@ -42,6 +43,24 @@ export class AuthController {
 			next(error);
 		}
 	};
+
+	public logout = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			res.clearCookie('refreshToken', {
+				httpOnly: true,
+				secure: false,
+				sameSite: 'lax',
+			});
+
+			res.json({
+				success: true,
+				message: 'Logged out',
+			});
+		} catch (error) {
+			next(error);
+		}
+	};
+
 	public refresh = async (
 		req: Request,
 		res: Response,
@@ -55,6 +74,19 @@ export class AuthController {
 			res.json({
 				success: true,
 				accessToken,
+			});
+		} catch (error) {
+			next(error);
+		}
+	};
+
+	public me = async (req: AuthRequest, res: Response, next: NextFunction) => {
+		try {
+			const user = await this.authService.getCurrentUser(req.user!.id);
+
+			res.json({
+				success: true,
+				user,
 			});
 		} catch (error) {
 			next(error);

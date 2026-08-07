@@ -1,10 +1,11 @@
-import type { Request, Response, NextFunction } from 'express';
+import type { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { env } from '../config/env.js';
+import { env } from '../../../config/env.js';
+import type { AuthRequest } from '../types/AuthRequest.js';
 
 export const authMiddleware = (
-	req: Request,
+	req: AuthRequest,
 	res: Response,
 	next: NextFunction,
 ) => {
@@ -27,14 +28,13 @@ export const authMiddleware = (
 
 		const token = authHeader.split(' ')[1];
 
-		if (!token) {
-			return res.status(401).json({
-				success: false,
-				message: 'Unauthorized',
-			});
-		}
+		const decoded = jwt.verify(token, env.JWT_SECRET) as {
+			id: string;
+		};
 
-		jwt.verify(token, env.JWT_SECRET);
+		req.user = {
+			id: decoded.id,
+		};
 
 		next();
 	} catch {

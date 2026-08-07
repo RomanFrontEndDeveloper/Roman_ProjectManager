@@ -14,3 +14,5 @@ export const globalRateLimit = rateLimit({
 
 	legacyHeaders: false, //Старі заголовки не потрібні.
 });
+
+// Щоб захиститися від спаму

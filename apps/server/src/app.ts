@@ -13,7 +13,7 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet()); // middleware, який додає HTTP-заголовки безпеки.
 
 app.use(
 	cors({

@@ -10,4 +10,9 @@ export class AuthRepository {
 	public async findByEmail(email: string) {
 		return await UserModel.findOne({ email });
 	}
+
+	public async findById(id: string) {
+		return UserModel.findById(id).select('-password');
+		// .select('-password') -> НЕ повертати пароль.
+	}
 }

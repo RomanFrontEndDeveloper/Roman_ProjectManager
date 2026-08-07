@@ -64,6 +64,16 @@ export class AuthService {
 	// 	Метод повертає новий Access Token.
 	// Потім Controller відправить його клієнту:
 
+	public async getCurrentUser(userId: string) {
+		const user = await this.authRepository.findById(userId);
+
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		return user;
+	}
+
 	async findUserByEmail(email: string) {
 		return this.authRepository.findByEmail(email);
 	}
