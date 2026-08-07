@@ -9,6 +9,8 @@ const envSchema = z.object({
 	JWT_SECRET: z.string(),
 	JWT_REFRESH_SECRET: z.string(),
 	CLIENT_URL: z.string().url(),
+	SMTP_EMAIL: z.string().email(),
+	SMTP_PASSWORD: z.string().min(1),
 });
 
 export const env = envSchema.parse(process.env);
