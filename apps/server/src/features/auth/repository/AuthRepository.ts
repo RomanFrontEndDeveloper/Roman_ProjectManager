@@ -21,4 +21,10 @@ export class AuthRepository {
 			verificationToken: token,
 		});
 	}
+
+	public async findByPasswordResetToken(token: string) {
+		return UserModel.findOne({
+			passwordResetToken: token,
+		});
+	}
 }

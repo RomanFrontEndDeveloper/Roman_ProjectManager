@@ -8,6 +8,8 @@ interface IUser {
 	role: 'user' | 'admin';
 	isVerified: boolean;
 	verificationToken?: string;
+	passwordResetToken?: string;
+	passwordResetExpires?: Date;
 }
 
 const userSchema = new Schema<IUser>(
@@ -50,6 +52,14 @@ const userSchema = new Schema<IUser>(
 		verificationToken: {
 			type: String,
 			default: null,
+		},
+
+		passwordResetToken: {
+			type: String,
+		},
+
+		passwordResetExpires: {
+			type: Date,
 		},
 	},
 	{

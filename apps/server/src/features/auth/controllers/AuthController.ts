@@ -111,4 +111,68 @@ export class AuthController {
 			next(error);
 		}
 	};
+
+	public forgotPassword = async (
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	) => {
+		try {
+			const { email } = req.body;
+
+			await this.authService.forgotPassword(email);
+
+			res.json({
+				success: true,
+				message: 'Password reset email sent',
+			});
+		} catch (error) {
+			next(error);
+		}
+	};
+
+	public resetPassword = async (
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	) => {
+		try {
+			const { token, newPassword } = req.body;
+
+			await this.authService.resetPassword(token, newPassword);
+
+			res.json({
+				success: true,
+				message: 'Password reset successfully',
+			});
+		} catch (error) {
+			next(error);
+		}
+	};
+
+	public changePassword = async (
+		req: AuthRequest,
+		res: Response,
+		next: NextFunction,
+	) => {
+		try {
+			const { currentPassword, newPassword } = req.body;
+
+			await this.authService.changePassword(
+				req.user!.id,
+				currentPassword,
+				newPassword,
+			);
+			req.user!.id;
+			// ! — TypeScript non-null assertion. Ти кажеш
+			//  TypeScript: Я знаю, що req.user тут існує.
+
+			res.json({
+				success: true,
+				message: 'Password changed successfully',
+			});
+		} catch (error) {
+			next(error);
+		}
+	};
 }
