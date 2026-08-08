@@ -14,6 +14,25 @@ export class AuthController {
 		res.status(201).json(user);
 	}
 
+	public verify = async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const { token } = req.query;
+
+			if (typeof token !== 'string') {
+				throw new Error('Verification token is required');
+			}
+
+			await this.authService.verifyAccount(token);
+
+			res.json({
+				success: true,
+				message: 'Account verified successfully',
+			});
+		} catch (error) {
+			next(error);
+		}
+	};
+
 	public login = async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const { email, password } = req.body;

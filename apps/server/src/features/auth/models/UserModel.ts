@@ -7,6 +7,7 @@ interface IUser {
 	avatar: string;
 	role: 'user' | 'admin';
 	isVerified: boolean;
+	verificationToken?: string;
 }
 
 const userSchema = new Schema<IUser>(
@@ -44,6 +45,11 @@ const userSchema = new Schema<IUser>(
 		isVerified: {
 			type: Boolean,
 			default: false,
+		},
+
+		verificationToken: {
+			type: String,
+			default: null,
 		},
 	},
 	{

@@ -15,4 +15,10 @@ export class AuthRepository {
 		return UserModel.findById(id).select('-password');
 		// .select('-password') -> НЕ повертати пароль.
 	}
+
+	public async findByVerificationToken(token: string) {
+		return UserModel.findOne({
+			verificationToken: token,
+		});
+	}
 }
