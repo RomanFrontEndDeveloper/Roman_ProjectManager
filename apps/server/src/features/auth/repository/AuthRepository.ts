@@ -1,6 +1,7 @@
 import { UserModel } from '../models/UserModel.js';
 //js - Тому що після компіляції TypeScript Node.js
 // запускає не .ts, а скомпільовані .js файли.
+import type { UpdateProfileDto } from '../dto/UpdateProfileDto.js';
 
 export class AuthRepository {
 	public async create(userData: any) {
@@ -16,6 +17,10 @@ export class AuthRepository {
 		// .select('-password') -> НЕ повертати пароль.
 	}
 
+	public async findByIdWithPassword(id: string) {
+		return UserModel.findById(id);
+	}
+
 	public async findByVerificationToken(token: string) {
 		return UserModel.findOne({
 			verificationToken: token,
@@ -26,5 +31,14 @@ export class AuthRepository {
 		return UserModel.findOne({
 			passwordResetToken: token,
 		});
+	}
+
+	async updateProfile(userId: string, data: UpdateProfileDto) {
+		return UserModel.findByIdAndUpdate(
+			userId,
+			{ $set: data }, // Зміни тільки ці поля.
+			{ new: true }, // Mongoose за замовчуванням може повернути старий
+			// документ, А нам потрібен уже оновлений
+		);
 	}
 }

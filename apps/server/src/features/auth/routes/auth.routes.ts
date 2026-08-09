@@ -3,6 +3,7 @@ import { AuthController } from '../controllers/AuthController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { MailService } from '../services/MailService.js';
 import { env } from '../../../config/env.js';
+
 const router = Router();
 
 const authController = new AuthController();
@@ -19,12 +20,13 @@ router.get('/verify', authController.verify);
 router.post('/forgot-password', authController.forgotPassword);
 router.post('/reset-password', authController.resetPassword);
 router.patch('/change-password', authMiddleware, authController.changePassword);
+router.patch('/profile', authMiddleware, authController.updateProfile);
 
 const mailService = new MailService();
 
 router.get('/test-email', async (_, res) => {
 	await mailService.sendMail({
-		to: 'romariotraveler@gmail.com',
+		to: 'roman168234@gmail.com',
 		subject: 'Roman Project Manager',
 		html: '<h1>Вітаю</h1>',
 	});

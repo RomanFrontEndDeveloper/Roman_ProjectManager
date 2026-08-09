@@ -8,6 +8,8 @@ import { env } from '../../../config/env.js';
 import { MailService } from './MailService.js';
 import { generateVerificationToken } from '../utils/generateVerificationToken.js';
 import { generatePasswordResetToken } from '../utils/generatePasswordResetToken.js';
+import type { UpdateProfileDto } from '../dto/UpdateProfileDto.js';
+
 export class AuthService {
 	private authRepository = new AuthRepository();
 	private mailService = new MailService();
@@ -164,6 +166,8 @@ export class AuthService {
 			</p>
 		`,
 		});
+
+		return resetToken;
 	}
 
 	public async resetPassword(token: string, newPassword: string) {
@@ -196,7 +200,7 @@ export class AuthService {
 		currentPassword: string,
 		newPassword: string,
 	) {
-		const user = await this.authRepository.findById(userId);
+		const user = await this.authRepository.findByIdWithPassword(userId);
 
 		if (!user) {
 			throw new Error('User not found');
@@ -216,5 +220,15 @@ export class AuthService {
 		user.password = hashedPassword;
 
 		await user.save();
+	}
+
+	public async updateProfile(userId: string, data: UpdateProfileDto) {
+		const user = await this.authRepository.updateProfile(userId, data);
+
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		return user;
 	}
 }

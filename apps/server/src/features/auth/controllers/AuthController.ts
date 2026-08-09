@@ -6,13 +6,21 @@ import type { AuthRequest } from '../types/AuthRequest.js';
 export class AuthController {
 	private authService = new AuthService();
 
-	public async register(req: Request, res: Response) {
-		const data: RegisterDto = req.body;
+	public register = async (
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	) => {
+		try {
+			const data: RegisterDto = req.body;
 
-		const user = await this.authService.register(data);
+			const user = await this.authService.register(data);
 
-		res.status(201).json(user);
-	}
+			res.status(201).json(user);
+		} catch (error) {
+			next(error);
+		}
+	};
 
 	public verify = async (req: Request, res: Response, next: NextFunction) => {
 		try {
@@ -122,9 +130,12 @@ export class AuthController {
 
 			await this.authService.forgotPassword(email);
 
+			const resetToken = await this.authService.forgotPassword(email);
+
 			res.json({
 				success: true,
 				message: 'Password reset email sent',
+				resetToken,
 			});
 		} catch (error) {
 			next(error);
@@ -170,6 +181,29 @@ export class AuthController {
 			res.json({
 				success: true,
 				message: 'Password changed successfully',
+			});
+		} catch (error) {
+			next(error);
+		}
+	};
+
+	public updateProfile = async (
+		req: AuthRequest,
+		res: Response,
+		next: NextFunction,
+	) => {
+		try {
+			const userId = req.user?.id;
+
+			if (!userId) {
+				throw new Error('Unauthorized');
+			}
+
+			const user = await this.authService.updateProfile(userId, req.body);
+
+			res.json({
+				success: true,
+				user,
 			});
 		} catch (error) {
 			next(error);
