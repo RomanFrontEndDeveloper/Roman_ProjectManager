@@ -2,6 +2,7 @@ import { UserModel } from '../models/UserModel.js';
 //js - Тому що після компіляції TypeScript Node.js
 // запускає не .ts, а скомпільовані .js файли.
 import type { UpdateProfileDto } from '../dto/UpdateProfileDto.js';
+import type { UpdateSettingsDto } from '../dto/UpdateSettingsDto.js';
 
 export class AuthRepository {
 	public async create(userData: any) {
@@ -50,6 +51,24 @@ public async updateAvatar(
 		userId,
 		{
 			avatar: avatarUrl,
+		},
+		{
+			new: true,
+		},
+	).select('-password');
+}
+
+public async updateSettings(
+	userId: string,
+	data: UpdateSettingsDto,
+) {
+	return UserModel.findByIdAndUpdate(
+		userId,
+		{
+			$set: {
+				'settings.emailNotifications': data.emailNotifications,
+				'settings.language': data.language,
+			},
 		},
 		{
 			new: true,

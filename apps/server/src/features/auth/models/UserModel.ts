@@ -11,6 +11,11 @@ interface IUser {
 	location: string;
 	website: string;
 
+	settings: {
+		emailNotifications: boolean;
+		language: string;
+	};
+
 	role: 'user' | 'admin';
 
 	isVerified: boolean;
@@ -93,6 +98,21 @@ const userSchema = new Schema<IUser>(
 			default: '',
 			trim: true,
 		},
+
+		settings: {
+	type: {
+		emailNotifications: {
+			type: Boolean,
+			default: true,
+		},
+
+		language: {
+			type: String,
+			default: 'uk',
+			trim: true,
+		},
+	},
+},
 	},
 	{
 		timestamps: true, // createdAt updatedAt

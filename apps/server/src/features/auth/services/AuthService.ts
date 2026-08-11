@@ -10,6 +10,7 @@ import { generateVerificationToken } from '../utils/generateVerificationToken.js
 import { generatePasswordResetToken } from '../utils/generatePasswordResetToken.js';
 import type { UpdateProfileDto } from '../dto/UpdateProfileDto.js';
 import { CloudinaryService } from './CloudinaryService.js';
+import type { UpdateSettingsDto } from '../dto/UpdateSettingsDto.js';
 export class AuthService {
 	private authRepository = new AuthRepository();
 	private mailService = new MailService();
@@ -233,15 +234,31 @@ export class AuthService {
 		return user;
 	}
 
-public async updateAvatar(
-	userId: string,
-	file: Buffer,
-) {
-	const avatarUrl = await this.cloudinaryService.uploadAvatar(file);
+    public async updateAvatar(
+	    userId: string,
+	    file: Buffer,
+    ) {
+	    const avatarUrl = await this.cloudinaryService.uploadAvatar(file);
 
-	const user = await this.authRepository.updateAvatar(
+	    const user = await this.authRepository.updateAvatar(
+	    	userId,
+		    avatarUrl,
+	);
+
+	if (!user) {
+		throw new Error('User not found');
+	}
+
+	return user;
+    }
+
+	public async updateSettings(
+	userId: string,
+	data: UpdateSettingsDto,
+) {
+	const user = await this.authRepository.updateSettings(
 		userId,
-		avatarUrl,
+		data,
 	);
 
 	if (!user) {
@@ -250,4 +267,6 @@ public async updateAvatar(
 
 	return user;
 }
+
+
 }

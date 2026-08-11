@@ -242,4 +242,30 @@ export class AuthController {
 		next(error);
 	}
     };
+
+	public updateSettings = async (
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const userId = req.user?.id;
+
+		if (!userId) {
+			throw new Error('Unauthorized');
+		}
+
+		const user = await this.authService.updateSettings(
+			userId,
+			req.body,
+		);
+
+		res.json({
+			success: true,
+			user,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
 }

@@ -45,4 +45,10 @@ router.patch(
 	authController.updateAvatar,
 );
 
+router.patch(
+	'/settings',
+	authMiddleware,
+	authController.updateSettings,
+);
+
 export default router;
