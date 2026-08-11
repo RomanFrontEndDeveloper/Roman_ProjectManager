@@ -51,4 +51,10 @@ router.patch(
 	authController.updateSettings,
 );
 
+router.patch(
+	'/preferences',
+	authMiddleware,
+	authController.updatePreferences,
+);
+
 export default router;

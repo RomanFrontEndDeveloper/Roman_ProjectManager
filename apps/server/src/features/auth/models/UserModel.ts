@@ -16,6 +16,12 @@ interface IUser {
 		language: string;
 	};
 
+	preferences: {
+	timezone: string;
+	dateFormat: string;
+	startOfWeek: 'monday' | 'sunday';
+   };
+
 	role: 'user' | 'admin';
 
 	isVerified: boolean;
@@ -112,7 +118,29 @@ const userSchema = new Schema<IUser>(
 			trim: true,
 		},
 	},
-},
+        },
+
+		preferences: {
+	        type: {
+		timezone: {
+			type: String,
+			default: 'Europe/Kyiv',
+			trim: true,
+		},
+
+		dateFormat: {
+			type: String,
+			default: 'DD.MM.YYYY',
+			trim: true,
+		},
+
+		startOfWeek: {
+			type: String,
+			enum: ['monday', 'sunday'],
+			default: 'monday',
+		},
+	},
+        },
 	},
 	{
 		timestamps: true, // createdAt updatedAt

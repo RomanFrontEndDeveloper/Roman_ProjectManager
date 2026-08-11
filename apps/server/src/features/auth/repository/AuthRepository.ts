@@ -3,6 +3,8 @@ import { UserModel } from '../models/UserModel.js';
 // запускає не .ts, а скомпільовані .js файли.
 import type { UpdateProfileDto } from '../dto/UpdateProfileDto.js';
 import type { UpdateSettingsDto } from '../dto/UpdateSettingsDto.js';
+import type { UpdatePreferencesDto } from '../dto/UpdatePreferencesDto.js';
+
 
 export class AuthRepository {
 	public async create(userData: any) {
@@ -68,6 +70,25 @@ public async updateSettings(
 			$set: {
 				'settings.emailNotifications': data.emailNotifications,
 				'settings.language': data.language,
+			},
+		},
+		{
+			new: true,
+		},
+	).select('-password');
+}
+
+public async updatePreferences(
+	userId: string,
+	data: UpdatePreferencesDto,
+) {
+	return UserModel.findByIdAndUpdate(
+		userId,
+		{
+			$set: {
+				'preferences.timezone': data.timezone,
+				'preferences.dateFormat': data.dateFormat,
+				'preferences.startOfWeek': data.startOfWeek,
 			},
 		},
 		{

@@ -11,6 +11,7 @@ import { generatePasswordResetToken } from '../utils/generatePasswordResetToken.
 import type { UpdateProfileDto } from '../dto/UpdateProfileDto.js';
 import { CloudinaryService } from './CloudinaryService.js';
 import type { UpdateSettingsDto } from '../dto/UpdateSettingsDto.js';
+import type { UpdatePreferencesDto } from '../dto/UpdatePreferencesDto.js';
 export class AuthService {
 	private authRepository = new AuthRepository();
 	private mailService = new MailService();
@@ -266,7 +267,21 @@ export class AuthService {
 	}
 
 	return user;
-}
+    }
 
+	public async updatePreferences(
+	   userId: string,
+	   data: UpdatePreferencesDto,
+    ) {
+	    const user = await this.authRepository.updatePreferences(
+		   userId,
+		   data,
+	    );
 
+	    if (!user) {
+		   throw new Error('User not found');
+	    }
+
+	    return user;
+    }
 }
