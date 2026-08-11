@@ -3,6 +3,7 @@ import { AuthController } from '../controllers/AuthController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { MailService } from '../services/MailService.js';
 import { env } from '../../../config/env.js';
+import { upload } from '../middleware/uploadMiddleware.js';
 
 const router = Router();
 
@@ -36,5 +37,12 @@ router.get('/test-email', async (_, res) => {
 		message: 'Email sent',
 	});
 });
+
+router.patch(
+	'/profile/avatar',
+	authMiddleware,
+	upload.single('avatar'),
+	authController.updateAvatar,
+);
 
 export default router;

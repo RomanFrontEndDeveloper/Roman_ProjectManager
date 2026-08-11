@@ -209,4 +209,37 @@ export class AuthController {
 			next(error);
 		}
 	};
+
+    public updateAvatar = async (
+	req: AuthRequest,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const userId = req.user?.id;
+
+		if (!userId) {
+			throw new Error('Unauthorized');
+		}
+
+		if (!req.file) {
+			return res.status(400).json({
+				success: false,
+				message: 'Avatar is required',
+			});
+		}
+
+		const user = await this.authService.updateAvatar(
+			userId,
+			req.file.buffer,
+		);
+
+		res.json({
+			success: true,
+			user,
+		});
+	} catch (error) {
+		next(error);
+	}
+    };
 }

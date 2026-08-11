@@ -9,11 +9,12 @@ import { MailService } from './MailService.js';
 import { generateVerificationToken } from '../utils/generateVerificationToken.js';
 import { generatePasswordResetToken } from '../utils/generatePasswordResetToken.js';
 import type { UpdateProfileDto } from '../dto/UpdateProfileDto.js';
-
+import { CloudinaryService } from './CloudinaryService.js';
 export class AuthService {
 	private authRepository = new AuthRepository();
 	private mailService = new MailService();
-
+    private cloudinaryService = new CloudinaryService();
+	
 	public async register(data: RegisterDto) {
 		// Перевіряємо, чи вже існує користувач
 		const existingUser = await this.authRepository.findByEmail(data.email);
@@ -231,4 +232,22 @@ export class AuthService {
 
 		return user;
 	}
+
+public async updateAvatar(
+	userId: string,
+	file: Buffer,
+) {
+	const avatarUrl = await this.cloudinaryService.uploadAvatar(file);
+
+	const user = await this.authRepository.updateAvatar(
+		userId,
+		avatarUrl,
+	);
+
+	if (!user) {
+		throw new Error('User not found');
+	}
+
+	return user;
+}
 }

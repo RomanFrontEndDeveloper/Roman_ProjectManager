@@ -41,4 +41,19 @@ export class AuthRepository {
 			// документ, А нам потрібен уже оновлений
 		);
 	}
+
+public async updateAvatar(
+	userId: string,
+	avatarUrl: string,
+) {
+	return UserModel.findByIdAndUpdate(
+		userId,
+		{
+			avatar: avatarUrl,
+		},
+		{
+			new: true,
+		},
+	).select('-password');
+}
 }
