@@ -6,9 +6,12 @@ await mongoose.connect(env.MONGODB_URI);
 
 console.log('MongoDB connected');
 
-app.listen(env.PORT, () => {
+app.listen(env.PORT, () => { // → запускає HTTP-сервер
 	console.log(`Server is running on http://localhost:${env.PORT}`);
 });
 
 // Origin складається з трьох частин: Protocol + Domain + Port
 // приклад: http://localhost:3000
+// app.listen(env.PORT); --> Сервер працюватиме, просто 
+// ти не отримаєш повідомлення в консолі.
+

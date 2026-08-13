@@ -58,7 +58,7 @@ export class AuthService {
 		});
 
 		return user;
-	}
+	}	
 
 	public async verifyAccount(token: string) {
 		const user = await this.authRepository.findByVerificationToken(token);
@@ -108,12 +108,13 @@ export class AuthService {
 
 		const accessToken = generateToken(payload.id);
 		// Тут створюється новий Access Token.
+		//payload — це дані, які лежать всередині JWT токена.
 
 		return accessToken;
 	} // Метод повертає новий Access Token.
 	// Потім Controller відправить його клієнту:
 
-	public async getCurrentUser(userId: string) {
+	public async getCurrentUser(userId: string) {  //me
 		const user = await this.authRepository.findById(userId);
 
 		if (!user) {
@@ -131,7 +132,7 @@ export class AuthService {
 		return this.authRepository.create(data);
 	}
 
-	public async forgotPassword(email: string) {
+	public async forgotPassword(email: string) { // /forgot-password
 		const user = await this.authRepository.findByEmail(email);
 
 		if (!user) {
@@ -212,7 +213,7 @@ export class AuthService {
 		const isCurrentPasswordCorrect = await bcrypt.compare(
 			currentPassword,
 			user.password,
-		);
+		); // Перевіряємо, чи поточний пароль користувача збігається з тим, що він надав.
 
 		if (!isCurrentPasswordCorrect) {
 			throw new Error('Current password is incorrect');
@@ -224,7 +225,8 @@ export class AuthService {
 
 		await user.save();
 	}
-
+	
+    // /profile
 	public async updateProfile(userId: string, data: UpdateProfileDto) {
 		const user = await this.authRepository.updateProfile(userId, data);
 
@@ -240,6 +242,8 @@ export class AuthService {
 	    file: Buffer,
     ) {
 	    const avatarUrl = await this.cloudinaryService.uploadAvatar(file);
+		// Cloudinary, візьми цей файл і завантаж його на сервер,
+		//  а потім дай мені URL цього файлу.
 
 	    const user = await this.authRepository.updateAvatar(
 	    	userId,

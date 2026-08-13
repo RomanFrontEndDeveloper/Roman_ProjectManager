@@ -7,7 +7,7 @@ import morgan from 'morgan';
 import { errorHandler } from './middlewares/errorHandler.js';
 import authRoutes from './features/auth/routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
-
+import workspaceRoutes from './features/workspace/routes/workspace.routes.js';
 // Morgan — middleware для логування HTTP-запитів.
 // Він показує метод, маршрут, статус і час виконання.
 
@@ -51,10 +51,14 @@ app.get('/health', (_, res) => {
 		success: true,
 		status: 'OK',
 		timestamp: new Date().toISOString(),
+		smsDefault: 'Hello, Romeo',
 	});
 });
 
 app.use('/api/auth', authRoutes);
+//Усі запити, які починаються з /api/auth, передавай у authRoutes
+app.use('/api/workspaces', workspaceRoutes);
+//Усі запити, які починаються з /api/workspaces, передавай у workspaceRoutes
 
 // Завжди останнім
 app.use(errorHandler);

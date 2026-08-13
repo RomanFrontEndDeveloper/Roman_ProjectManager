@@ -29,12 +29,18 @@ export const authMiddleware = (
 		const token = authHeader.split(' ')[1];
 
 		const decoded = jwt.verify(token, env.JWT_SECRET) as {
-			id: string;
+			id: string; // «Вважай, що результат jwt.verify() має поле id, яке є рядком».
 		};
+        // 	decoded = {
+        //  id: "12345hgbhgvhg6"
+        //  }
 
 		req.user = {
 			id: decoded.id,
 		};
+        // req.user = {
+        //   id: "68a123456789..."
+        // };
 
 		next();
 	} catch {

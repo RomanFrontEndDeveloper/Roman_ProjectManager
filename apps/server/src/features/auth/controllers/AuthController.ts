@@ -24,7 +24,7 @@ export class AuthController {
 
 	public verify = async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const { token } = req.query;
+			const { token } = req.query; // Цей token приходить із URL.
 
 			if (typeof token !== 'string') {
 				throw new Error('Verification token is required');
@@ -94,10 +94,10 @@ export class AuthController {
 		next: NextFunction,
 	) => {
 		try {
-			const refreshToken = req.cookies.refreshToken;
+			const refreshToken = req.cookies.refreshToken;// Отримуємо refresh token із cookie, який браузер автоматично надсилає.
 
 			const accessToken = await this.authService.refresh(refreshToken);
-
+            // візьми refresh token, перевір його і дай мені новий access token
 			res.json({
 				success: true,
 				accessToken,
@@ -127,8 +127,6 @@ export class AuthController {
 	) => {
 		try {
 			const { email } = req.body;
-
-			await this.authService.forgotPassword(email);
 
 			const resetToken = await this.authService.forgotPassword(email);
 
@@ -174,7 +172,7 @@ export class AuthController {
 				currentPassword,
 				newPassword,
 			);
-			req.user!.id;
+			//req.user!.id;
 			// ! — TypeScript non-null assertion. Ти кажеш
 			//  TypeScript: Я знаю, що req.user тут існує.
 
@@ -193,7 +191,7 @@ export class AuthController {
 		next: NextFunction,
 	) => {
 		try {
-			const userId = req.user?.id;
+			const userId = req.user?.id;// Отримуємо id користувача з req.user, який був доданий authMiddleware після перевірки токена.
 
 			if (!userId) {
 				throw new Error('Unauthorized');

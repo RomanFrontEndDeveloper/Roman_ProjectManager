@@ -8,14 +8,14 @@ import type { UpdatePreferencesDto } from '../dto/UpdatePreferencesDto.js';
 
 export class AuthRepository {
 	public async create(userData: any) {
-		return await UserModel.create(userData);
+		return await UserModel.create(userData); //register
 	}
 
-	public async findByEmail(email: string) {
-		return await UserModel.findOne({ email });
+	public async findByEmail(email: string) { // /forgot-password
+		return await UserModel.findOne({ email }); //login
 	}
 
-	public async findById(id: string) {
+	public async findById(id: string) {  //me
 		return UserModel.findById(id).select('-password');
 		// .select('-password') -> НЕ повертати пароль.
 	}
@@ -24,18 +24,19 @@ export class AuthRepository {
 		return UserModel.findById(id);
 	}
 
-	public async findByVerificationToken(token: string) {
+	public async findByVerificationToken(token: string) {  //verify
 		return UserModel.findOne({
 			verificationToken: token,
 		});
 	}
 
-	public async findByPasswordResetToken(token: string) {
+	public async findByPasswordResetToken(token: string) { // /reset-password
 		return UserModel.findOne({
 			passwordResetToken: token,
 		});
 	}
-
+	
+    // /profile
 	async updateProfile(userId: string, data: UpdateProfileDto) {
 		return UserModel.findByIdAndUpdate(
 			userId,
@@ -44,11 +45,17 @@ export class AuthRepository {
 			// документ, А нам потрібен уже оновлений
 		);
 	}
+// 	UserModel.findByIdAndUpdate(
+//                                id,
+//                        updateData,
+//                           options
+//                              );
 
-public async updateAvatar(
+
+    public async updateAvatar(
 	userId: string,
 	avatarUrl: string,
-) {
+    ) {
 	return UserModel.findByIdAndUpdate(
 		userId,
 		{
@@ -58,12 +65,14 @@ public async updateAvatar(
 			new: true,
 		},
 	).select('-password');
-}
+    }
+	// Знайди користувача по id, онови поле avatar, 
+	// поверни оновленого користувача без пароля.
 
-public async updateSettings(
+    public async updateSettings(
 	userId: string,
 	data: UpdateSettingsDto,
-) {
+    ) {
 	return UserModel.findByIdAndUpdate(
 		userId,
 		{
@@ -76,12 +85,12 @@ public async updateSettings(
 			new: true,
 		},
 	).select('-password');
-}
+    }
 
-public async updatePreferences(
+    public async updatePreferences(
 	userId: string,
 	data: UpdatePreferencesDto,
-) {
+   ) {
 	return UserModel.findByIdAndUpdate(
 		userId,
 		{
@@ -95,5 +104,5 @@ public async updatePreferences(
 			new: true,
 		},
 	).select('-password');
-}
+    }
 }
