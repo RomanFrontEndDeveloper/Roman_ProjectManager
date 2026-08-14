@@ -1,43 +1,41 @@
 import { WorkspaceRepository } from "../repository/WorkspaceRepository.js";
-
+import type { CreateWorkspaceDto } from "../dto/create-workspace.dto.js";
+import type { UpdateWorkspaceDto } from "../dto/update-workspace.dto.js";
+import type { UpdateSettingsDto } from "../dto/update-settings.dto.js";
 export class WorkspaceService {
   private workspaceRepository = new WorkspaceRepository();
 
-  public async createWorkspace(data: any) {
-    return this.workspaceRepository.create(data);
+  async create(dto: CreateWorkspaceDto, ownerId: string) {
+    return this.workspaceRepository.create(dto, ownerId);
   }
 
-  public async getAllWorkspaces() {
+  async findAll() {
     return this.workspaceRepository.findAll();
   }
 
-  public async getWorkspaceById(id: string) {
-    const workspace = await this.workspaceRepository.findById(id);
-
-    if (!workspace) {
-      throw new Error("Workspace not found");
-    }
-
-    return workspace;
+  async findById(id: string) {
+    return this.workspaceRepository.findById(id);
   }
 
-  public async updateWorkspace(id: string, data: any) {
-    const workspace = await this.workspaceRepository.update(id, data);
-
-    if (!workspace) {
-      throw new Error("Workspace not found");
-    }
-
-    return workspace;
+  async update(id: string, dto: UpdateWorkspaceDto) {
+    return this.workspaceRepository.update(id, dto);
   }
 
-  public async deleteWorkspace(id: string) {
-    const workspace = await this.workspaceRepository.delete(id);
-
-    if (!workspace) {
-      throw new Error("Workspace not found");
-    }
-
-    return workspace;
+  async delete(id: string) {
+    return this.workspaceRepository.delete(id);
   }
+
+  async updateRole(workspaceId: string, userId: string, role: string) {
+    return this.workspaceRepository.updateRole(workspaceId, userId, role);
+  }
+
+  async updateSettings(
+  workspaceId: string,
+  settings: UpdateSettingsDto
+) {
+  return this.workspaceRepository.updateSettings(
+    workspaceId,
+    settings
+  );
+}
 }

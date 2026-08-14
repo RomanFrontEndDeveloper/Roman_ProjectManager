@@ -1,101 +1,70 @@
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
+
 import { WorkspaceService } from "../services/WorkspaceService.js";
 
 export class WorkspaceController {
   private workspaceService = new WorkspaceService();
 
-  public createWorkspace = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    try {
-      const workspace = await this.workspaceService.createWorkspace(req.body);
+  create = async (req: Request, res: Response) => {
+    const workspace = await this.workspaceService.create(
+      req.body,
+      req.user.id as string,
+    );
 
-      res.status(201).json({
-        success: true,
-        workspace,
-      });
-    } catch (error) {
-      next(error);
-    }
+    res.status(201).json(workspace);
   };
 
-  public getAllWorkspaces = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const workspaces =
-      await this.workspaceService.getAllWorkspaces();
+  findAll = async (req: Request, res: Response) => {
+    const workspaces = await this.workspaceService.findAll();
 
-    res.json({
-      success: true,
-      workspaces,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+    res.json(workspaces);
+  };
 
-public getWorkspaceById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const workspace =
-      await this.workspaceService.getWorkspaceById(
-        req.params.id as string,
-      );
-
-    res.json({
-      success: true,
-      workspace,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-public updateWorkspace = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const workspace =
-      await this.workspaceService.updateWorkspace(
-        req.params.id as string,
-        req.body,
-      );
-
-    res.json({
-      success: true,
-      workspace,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-public deleteWorkspace = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    await this.workspaceService.deleteWorkspace(
+  findById = async (req: Request, res: Response) => {
+    const workspace = await this.workspaceService.findById(
       req.params.id as string,
     );
 
+    res.json(workspace);
+  };
+
+  update = async (req: Request, res: Response) => {
+    const workspace = await this.workspaceService.update(
+      req.params.id as string,
+      req.body,
+    );
+
+    res.json(workspace);
+  };
+
+  delete = async (req: Request, res: Response) => {
+    await this.workspaceService.delete(req.params.id as string);
+
+    res.status(204).send();
+  };
+
+  updateRole = async (req: Request, res: Response) => {
+    await this.workspaceService.updateRole(
+      req.params.workspaceId as string,
+      req.params.userId as string,
+      req.body.role as string,
+    );
+
     res.json({
-      success: true,
-      message: 'Workspace deleted',
+      message: "Role updated",
     });
-  } catch (error) {
-    next(error);
-  }
+  };
+
+  updateSettings = async (
+  req: Request,
+  res: Response
+) => {
+  const workspace =
+    await this.workspaceService.updateSettings(
+      req.params.workspaceId as string,
+      req.body
+    );
+
+  res.json(workspace);
 };
 }
