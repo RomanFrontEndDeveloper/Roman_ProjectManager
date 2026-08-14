@@ -2,10 +2,10 @@ import type { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { env } from '../../../config/env.js';
-import type { AuthRequest } from '../types/AuthRequest.js';
+import type { Request } from "express";
 
 export const authMiddleware = (
-	req: AuthRequest,
+	req: Request,
 	res: Response,
 	next: NextFunction,
 ) => {
