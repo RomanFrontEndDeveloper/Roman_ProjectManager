@@ -42,7 +42,7 @@ const workspaceSchema = new Schema<IWorkspace>(
 
     ownerId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "User", // Дозволяє використовувати populate() для отримання пов'язаних документів.
       required: true,
     },
 

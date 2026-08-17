@@ -15,14 +15,15 @@ export class WorkspaceInviteRepository {
     return WorkspaceInviteModel.findOne({
       token,
       isAccepted: false,
-    });
+    }); // Перевіряємо, чи запрошення ще не прийнято
   }
 
   async acceptInvite(inviteId: string) {
     return WorkspaceInviteModel.findByIdAndUpdate(
       inviteId,
       {
-        isAccepted: true,
+        isAccepted: true, // Встановлюємо прапорець isAccepted на true, щоб
+        // позначити, щозапрошення прийнято
       },
       {
         new: true,
