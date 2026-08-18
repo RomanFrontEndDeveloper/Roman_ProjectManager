@@ -11,6 +11,8 @@ import authRoutes from "./features/auth/routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import workspaceRoutes from "./features/workspace/routes/workspace.routes.js";
 import workspaceInviteRoutes from "./features/workspace-members/routes/workspaceMember.routes.js";
+import projectRoutes from "./features/project/routes/project.routes.js";
+
 const app = express();
 
 app.use(helmet()); // middleware, який додає HTTP-заголовки безпеки.
@@ -58,18 +60,13 @@ app.get("/health", (_, res) => {
 app.use("/api/auth", authRoutes);
 //Усі запити, які починаються з /api/auth, передавай у authRoutes
 
-
-app.use(
-  "/api/workspaces",
-  workspaceRoutes
-);
+app.use("/api/workspaces", workspaceRoutes);
 //Усі запити, які починаються з /api/workspaces, передавай у workspaceRoutes
 
+app.use("/api/workspaces", workspaceInviteRoutes);
 
-app.use(
-  "/api/workspaces",
-  workspaceInviteRoutes
-);
+app.use("/api/projects", projectRoutes);
+
 // Завжди останнім:
 app.use(errorHandler);
 
