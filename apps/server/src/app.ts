@@ -12,6 +12,7 @@ import cookieParser from "cookie-parser";
 import workspaceRoutes from "./features/workspace/routes/workspace.routes.js";
 import workspaceInviteRoutes from "./features/workspace-members/routes/workspaceMember.routes.js";
 import projectRoutes from "./features/project/routes/project.routes.js";
+import taskRoutes from "./features/task/routes/task.routes.js";
 
 const app = express();
 
@@ -66,6 +67,8 @@ app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/workspaces", workspaceInviteRoutes);
 
 app.use("/api/projects", projectRoutes);
+
+app.use("/api/tasks", taskRoutes);
 
 // Завжди останнім:
 app.use(errorHandler);
