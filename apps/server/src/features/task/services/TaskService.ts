@@ -16,4 +16,14 @@ export class TaskService {
   async delete(id: string) {
     return this.repository.delete(id);
   }
+
+  async getById(id: string) {
+    const task = await this.repository.findById(id);
+
+    if (!task) {
+      throw new Error("Task not found");
+    }
+
+    return task;
+  }
 }

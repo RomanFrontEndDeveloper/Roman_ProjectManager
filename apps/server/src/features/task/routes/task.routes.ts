@@ -14,4 +14,5 @@ router.patch("/:id", authMiddleware, taskController.update);
 
 router.delete("/:id", authMiddleware, taskController.delete);
 
+router.get("/:id", authMiddleware, taskController.getById);
 export default router;

@@ -23,4 +23,10 @@ export class TaskController {
       message: "Task deleted",
     });
   };
+
+  getById = async (req: Request, res: Response) => {
+    const task = await this.service.getById(req.params.id as string);
+
+    res.json(task);
+  };
 }

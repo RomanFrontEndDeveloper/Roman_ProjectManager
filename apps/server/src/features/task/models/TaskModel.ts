@@ -1,5 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import type { TaskStatus } from "../types/task-status.js";
+import type { TaskPriority } from "../types/task-priority.js";
 
 export interface ITask {
   title: string;
@@ -7,6 +8,9 @@ export interface ITask {
   projectId: Types.ObjectId; // Ідентифікатор проєкту, до якого належить задача (projectId містить MongoDB ObjectId)
   assigneeId: Types.ObjectId; // Кому призначена задача (якому User)
   status: TaskStatus; // Статус задачі: "todo", "in_progress" або "done"
+  labels: string[]; // Масив рядків, що представляє мітки (labels) задачі
+  priority: TaskPriority;
+  dueDate?: Date;
 }
 //приклад: {
 //   "title": "Створити Login API",
@@ -44,6 +48,21 @@ const taskSchema = new Schema<ITask>(
       type: String,
       enum: ["todo", "in_progress", "done"],
       default: "todo",
+    },
+
+    labels: {
+      type: [String],
+      default: [],
+    },
+
+    priority: {
+      type: String,
+      enum: ["low", "medium", "high"],
+      default: "medium",
+    },
+
+    dueDate: {
+      type: Date,
     },
   },
   {

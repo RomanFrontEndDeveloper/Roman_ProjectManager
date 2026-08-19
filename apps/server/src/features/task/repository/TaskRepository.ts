@@ -14,4 +14,8 @@ export class TaskRepository {
   async delete(id: string) {
     return TaskModel.findByIdAndDelete(id);
   }
+
+  async findById(id: string) {
+  return TaskModel.findById(id);
+}
 }
