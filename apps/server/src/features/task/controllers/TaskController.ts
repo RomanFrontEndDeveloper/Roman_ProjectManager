@@ -29,4 +29,20 @@ export class TaskController {
 
     res.json(task);
   };
+
+  uploadAttachments = async (req: Request, res: Response) => {
+    const files = req.files as Express.Multer.File[];
+
+    const attachments = files.map((file: any) => ({
+      url: file.path,
+      publicId: file.filename,
+    }));
+
+    const task = await this.service.uploadAttachments(
+      req.params.id as string,
+      attachments,
+    );
+
+    res.json(task);
+  };
 }

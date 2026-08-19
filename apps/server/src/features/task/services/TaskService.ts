@@ -26,4 +26,11 @@ export class TaskService {
 
     return task;
   }
+
+  async uploadAttachments(
+  id: string,
+  attachments: { url: string; publicId: string }[],
+) {
+  return this.repository.uploadAttachments(id, attachments);
+}
 }

@@ -16,6 +16,21 @@ export class TaskRepository {
   }
 
   async findById(id: string) {
-  return TaskModel.findById(id);
-}
+    return TaskModel.findById(id);
+  }
+
+  async uploadAttachments(
+    id: string,
+    attachments: { url: string; publicId: string }[],
+  ) {
+    return TaskModel.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          attachments: { $each: attachments },
+        },
+      },
+      { new: true },
+    );
+  }
 }
