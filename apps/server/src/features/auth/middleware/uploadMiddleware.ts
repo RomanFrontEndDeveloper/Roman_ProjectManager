@@ -8,3 +8,7 @@ export const upload = multer({
 		fileSize: 5 * 1024 * 1024,
 	},
 });
+
+// Multer = middleware для прийому файлів
+// (зображень, PDF, документів тощо)
+// в Express.

@@ -11,3 +11,7 @@ const storage = new CloudinaryStorage({
 });
 
 export const upload = multer({ storage });
+
+// Multer = middleware для прийому файлів
+// (зображень, PDF, документів тощо)
+// в Express.

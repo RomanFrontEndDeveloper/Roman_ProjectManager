@@ -20,12 +20,15 @@ Full Stack Project Management application built with **Next.js**, **Express**, *
 - Mongoose
 - JWT Authentication
 - HttpOnly Cookies
+- Cloudinary
+- Nodemailer
+- Zod
 
 ---
 
 # Architecture
 
-```
+```text
 Controller
       │
       ▼
@@ -45,31 +48,63 @@ MongoDB
 
 ---
 
+# Feature Architecture
+
+Each feature contains:
+
+```text
+feature
+│
+├── controllers
+├── dto
+├── models
+├── repository
+├── routes
+├── services
+└── types
+```
+
+Example:
+
+```text
+project
+│
+├── controllers
+├── dto
+├── models
+├── repository
+├── routes
+├── services
+└── types
+```
+
+---
+
 # Folder Structure
 
-```
+```text
 apps
 │
 ├── client
 │
 └── server
+    │
     └── src
-        ├── config
-        ├── features
         │
-        └── auth
-            ├── controllers
-            ├── dto
-            ├── middleware
-            ├── models
-            ├── repository
-            ├── routes
-            ├── services
-            ├── types
-            └── utils
+        ├── config
+        │
+        ├── features
+        │   │
+        │   ├── auth
+        │   ├── user
+        │   ├── workspace
+        │   ├── workspace-members
+        │   ├── project
+        │   └── task
         │
         ├── middlewares
         ├── utils
+        │
         ├── app.ts
         └── server.ts
 ```
@@ -85,18 +120,21 @@ apps
 - Express Rate Limit
 - Morgan Logging
 - Global Error Middleware
+- HttpOnly Cookies
+- JWT Authentication
 
 ---
 
 ## Validation
 
 - DTO
-- Zod Environment Validation
+- Zod Validation
+- Environment Validation
 - ObjectId Validation
 
 ---
 
-## Authentication
+# Authentication
 
 Implemented:
 
@@ -112,9 +150,94 @@ Implemented:
 
 ---
 
+# Email Authentication
+
+Implemented:
+
+- Nodemailer
+- Email Verification
+- Verify Account
+- Forgot Password
+- Reset Password
+- Change Password
+
+---
+
+# User Profile
+
+Implemented:
+
+- Edit Profile
+- Cloudinary Avatar Upload
+- User Settings
+- Account Preferences
+
+---
+
+# Workspace
+
+Implemented:
+
+- Workspace Model
+- Workspace CRUD
+- Invite Users
+- Join Workspace
+- Roles
+- Permission Matrix
+- Workspace Settings
+
+---
+
+# Projects
+
+Implemented:
+
+- Project Model
+- Project CRUD
+- Search
+- Pagination
+- Filters
+- Sorting
+- Project Members
+
+Features:
+
+- Search by project name
+- Pagination
+- Status filtering
+- Sorting
+- Member management
+
+---
+
+# Tasks
+
+Implemented:
+
+- Task Model
+- Create Task
+- Edit Task
+- Delete Task
+- Labels
+- Priority
+- Due Date
+- Checklist
+- Attachments (Cloudinary)
+
+Features:
+
+- Task status
+- Task priorities
+- Labels
+- Due dates
+- Checklists
+- File attachments
+
+---
+
 # JWT Authentication Flow
 
-```
+```text
 Register
       │
       ▼
@@ -143,7 +266,7 @@ Authorized User
 
 ## Register
 
-```
+```http
 POST /api/auth/register
 ```
 
@@ -153,7 +276,7 @@ Creates a new user.
 
 ## Login
 
-```
+```http
 POST /api/auth/login
 ```
 
@@ -170,7 +293,7 @@ Stores:
 
 ## Refresh Token
 
-```
+```http
 POST /api/auth/refresh
 ```
 
@@ -180,7 +303,7 @@ Reads Refresh Token from HttpOnly Cookie and generates a new Access Token.
 
 ## Logout
 
-```
+```http
 POST /api/auth/logout
 ```
 
@@ -190,23 +313,107 @@ Clears Refresh Token Cookie.
 
 ## Current User
 
-```
+```http
 GET /api/auth/me
+```
+
+Requires:
+
+```text
+Authorization: Bearer ACCESS_TOKEN
 ```
 
 Returns currently authenticated user.
 
-Requires:
+---
 
+# Project Endpoints
+
+## Create Project
+
+```http
+POST /api/projects
 ```
-Authorization: Bearer ACCESS_TOKEN
+
+---
+
+## Get Projects
+
+```http
+GET /api/projects
+```
+
+---
+
+## Search Projects
+
+```http
+GET /api/projects/search?search=roman
+```
+
+---
+
+## Filter Projects
+
+```http
+GET /api/projects/filter?status=active
+```
+
+---
+
+## Get Project By Id
+
+```http
+GET /api/projects/:id
+```
+
+---
+
+## Update Project
+
+```http
+PATCH /api/projects/:id
+```
+
+---
+
+## Delete Project
+
+```http
+DELETE /api/projects/:id
+```
+
+---
+
+# Task Endpoints
+
+## Create Task
+
+```http
+POST /api/tasks
+```
+
+---
+
+## Update Task
+
+```http
+PATCH /api/tasks/:id
+```
+
+---
+
+## Delete Task
+
+```http
+DELETE /api/tasks/:id
 ```
 
 ---
 
 # Authentication Flow
 
-```
+```text
 Client
 
       │
@@ -271,7 +478,7 @@ jwt.verify()
 
 ↓
 
-Authorized
+Authorized User
 ```
 
 ---
@@ -282,16 +489,19 @@ Implemented:
 
 - Helmet
 - CORS
+- Express Rate Limit
+- JWT Authentication
 - HttpOnly Cookies
 - SameSite Cookies
-- JWT Authentication
 
 ---
 
 # Environment Variables
 
-```
+```env
 PORT=5000
+
+CLIENT_URL=http://localhost:3000
 
 MONGODB_URI=
 
@@ -299,47 +509,42 @@ JWT_SECRET=
 
 JWT_REFRESH_SECRET=
 
-CLIENT_URL=http://localhost:3000
+CLOUDINARY_CLOUD_NAME=
+
+CLOUDINARY_API_KEY=
+
+CLOUDINARY_API_SECRET=
+
+SMTP_HOST=
+
+SMTP_PORT=
+
+SMTP_USER=
+
+SMTP_PASSWORD=
 ```
 
 ---
 
-# Current Authentication Features
+# Current Project Status
 
-✅ Register
+Completed Lessons: 58 / 90
 
-✅ Login
-
-✅ Access Token
-
-✅ Refresh Token
-
-✅ HttpOnly Cookies
-
-✅ Cookie Parser
-
-✅ JWT Verify
-
-✅ Protected Routes
-
-✅ Logout
-
-✅ Current User Endpoint
+Progress: 64%
 
 ---
 
 # Implemented Lessons
 
-## Block 1. Backend Foundation
+## Block 1. Backend Architecture & Foundation
 
 - Monorepo (pnpm Workspace)
 - Next.js + Express + MongoDB
 - Feature-based Architecture
-- DTO
-- Types
+- DTO + Types
 - Service Layer
 - Repository Pattern
-- Environment Variables
+- Environment Variables + Zod Validation
 - Helmet
 - CORS
 - Express Rate Limit
@@ -352,7 +557,7 @@ CLIENT_URL=http://localhost:3000
 
 ## Block 2. Authentication
 
-- User Model (Mongoose)
+- User Model
 - Register Endpoint
 - Login Endpoint
 - JWT Authentication
@@ -365,9 +570,7 @@ CLIENT_URL=http://localhost:3000
 
 ---
 
-# Next Block
-
-Email Authentication
+## Block 3. Email Authentication
 
 - Nodemailer
 - Email Verification
@@ -375,3 +578,91 @@ Email Authentication
 - Forgot Password
 - Reset Password
 - Change Password
+
+---
+
+## Block 4. User Profile
+
+- User Model Refactoring
+- Edit Profile
+- Cloudinary Avatar
+- User Settings
+- Account Preferences
+
+---
+
+## Block 5. Workspace
+
+- Workspace Model
+- Workspace CRUD
+- Invite Users
+- Join Workspace
+- Roles
+- Permission Matrix
+- Workspace Settings
+
+---
+
+## Block 6. Projects
+
+- Project Model
+- Project CRUD
+- Search
+- Pagination
+- Filters
+- Sorting
+- Project Members
+
+---
+
+## Block 7. Tasks
+
+- Task Model
+- Create Task
+- Edit Task
+- Delete Task
+- Labels
+- Priority
+- Due Date
+- Checklist
+- Attachments (Cloudinary)
+
+---
+
+# Next Block
+
+## Block 8. Comments
+
+59. Comments CRUD
+
+60. Mentions
+
+61. Activity Log
+
+---
+
+# Roadmap
+
+Remaining Lessons:
+
+- Comments
+- Realtime
+- Notifications
+- File Management
+- Search & Analytics
+- Testing
+- Deployment
+- CI/CD
+
+---
+
+# Goal
+
+Build a production-ready Project Management platform inspired by:
+
+- Jira
+- Trello
+- ClickUp
+- Asana
+
+using modern Full Stack architecture, scalable backend design, clean code principles and TypeScript.

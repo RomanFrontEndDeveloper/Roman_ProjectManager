@@ -1,7 +1,7 @@
 // Цей код створює та налаштовує SMTP-з'єднання з Gmail,
 // через яке сервер зможе надсилати електронні листи.
 
-import nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer';// Nodemailer = бібліотека для відправки email з Node.js.
 import { env } from '../../../config/env.js';
 
 export class MailService {
