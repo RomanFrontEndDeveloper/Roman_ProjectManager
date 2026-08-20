@@ -1,7 +1,9 @@
 import { CommentModel } from "../models/CommentModel.js";
+import type { CreateCommentDto } from "../dto/create-comment.dto.js";
+import type { UpdateCommentDto } from "../dto/update-comment.dto.js";
 
 export class CommentRepository {
-  create(data: any) {
+  create(data: CreateCommentDto) {
     return CommentModel.create(data);
   }
 
@@ -15,7 +17,7 @@ export class CommentRepository {
     return CommentModel.findById(id); // це ID конкретного коментаря
   }
 
-  update(id: string, data: any) {
+  update(id: string, data: UpdateCommentDto) {
     return CommentModel.findByIdAndUpdate(
       id, // це ID конкретного коментаря
       data,
