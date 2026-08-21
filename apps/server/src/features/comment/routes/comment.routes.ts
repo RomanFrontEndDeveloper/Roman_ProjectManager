@@ -4,31 +4,18 @@ import { CommentController } from "../controllers/CommentController.js";
 
 const router = Router();
 
-const controller =
-  new CommentController();
+const controller = new CommentController();
 
-router.post(
-  "/tasks/:taskId/comments",
-  authMiddleware,
-  controller.create,
-);
+router.post("/tasks/:taskId/comments", authMiddleware, controller.create);
 
 router.get(
-  "/tasks/:taskId/comments",
+  "/tasks/:taskId/comments", //Коментарі задачі з ID 68...23456789
   authMiddleware,
   controller.getByTask,
 );
 
-router.patch(
-  "/comments/:id",
-  authMiddleware,
-  controller.update,
-);
+router.patch("/comments/:id", authMiddleware, controller.update);
 
-router.delete(
-  "/comments/:id",
-  authMiddleware,
-  controller.delete,
-);
+router.delete("/comments/:id", authMiddleware, controller.delete);
 
 export default router;
