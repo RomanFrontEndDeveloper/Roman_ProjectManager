@@ -11,13 +11,14 @@ await mongoose.connect(env.MONGODB_URI);
 
 console.log("MongoDB connected");
 
-// Створюємо HTTP сервер
+// Створюємо HTTP сервер: ✅ Express працює через HTTP Server
+// Саме це потрібно Socket.io.
 const httpServer = http.createServer(app);
 
 // Створюємо Socket.io сервер
 const io = createSocketServer(httpServer);
 
-// Реєструємо всі socket події
+// Реєструємо всі socket події (connection disconnect)
 registerSocketEvents(io);
 
 // Запускаємо сервер

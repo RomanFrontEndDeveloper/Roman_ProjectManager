@@ -1,10 +1,9 @@
 import { Server as HttpServer } from "http";
 import { Server } from "socket.io";
 
-export const createSocketServer = (
-  httpServer: HttpServer,
-) => {
-  const io = new Server(httpServer, { //Створюємо Socket.io сервер поверх HTTP сервера.
+export const createSocketServer = (httpServer: HttpServer) => {
+  const io = new Server(httpServer, {
+    //Створюємо Socket.io сервер поверх HTTP сервера.
     cors: {
       origin: "*",
       credentials: true,
@@ -13,3 +12,6 @@ export const createSocketServer = (
 
   return io;
 };
+
+// HttpServer HTTP сервер Node.js
+// Server  Socket.IO сервер
