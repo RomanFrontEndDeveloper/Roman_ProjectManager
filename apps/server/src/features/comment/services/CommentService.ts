@@ -1,8 +1,9 @@
-import { CommentRepository } from "../repository/CommentRepository.js";
-import type { UpdateCommentDto } from "../dto/update-comment.dto.js";
-import type { CreateCommentDto } from "../dto/create-comment.dto.js";
-import { extractMentions } from "../utils/extractMentions.js";
 import { UserModel } from "../../auth/models/UserModel.js";
+import type { CreateCommentDto } from "../dto/create-comment.dto.js";
+import type { UpdateCommentDto } from "../dto/update-comment.dto.js";
+import { MentionModel } from "../models/MentionModel.js";
+import { CommentRepository } from "../repository/CommentRepository.js";
+import { extractMentions } from "../utils/extractMentions.js";
 
 export class CommentService {
   private repository = new CommentRepository();
@@ -17,27 +18,47 @@ export class CommentService {
         name: username,
       });
 
-      console.log(user);
-    }
+      if (!user) {
+        continue;
+      }
 
-    for (const username of usernames) {
-      console.log(`Mention found: ${username}`);
+      await MentionModel.create({
+        commentId: comment._id,
+        userId: user._id,
+      });
     }
-
-    console.log(usernames);
 
     return comment;
   }
 
-  getTaskComments(taskId: string) {
+  async getTaskComments(taskId: string) {
     return this.repository.findByTask(taskId);
   }
 
-  update(id: string, data: UpdateCommentDto) {
-    return this.repository.update(id, data);
+  async update(
+    id: string,
+    data: UpdateCommentDto,
+  ) {
+    const comment =
+      await this.repository.update(id, data);
+
+    if (!comment) {
+      throw new Error("Comment not found");
+    }
+
+    return comment;
   }
 
-  delete(id: string) {
-    return this.repository.delete(id);
+  async delete(id: string) {
+    const comment =
+      await this.repository.delete(id);
+
+    if (!comment) {
+      throw new Error("Comment not found");
+    }
+
+    return {
+      message: "Comment deleted successfully",
+    };
   }
 }
