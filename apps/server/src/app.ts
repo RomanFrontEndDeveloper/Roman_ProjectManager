@@ -1,56 +1,48 @@
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import { env } from "./config/env.js";
-import { globalRateLimit } from "./middlewares/rateLimit.js";
 import morgan from "morgan";
-// Morgan — middleware для логування HTTP-запитів.
-// Він показує метод, маршрут, статус і час виконання.
-import { errorHandler } from "./middlewares/errorHandler.js";
-import authRoutes from "./features/auth/routes/auth.routes.js";
 import cookieParser from "cookie-parser";
+
+import { env } from "./config/env.js";
+import { API_VERSION } from "./config/apiVersion.js";
+
+import { globalRateLimit } from "./middlewares/rateLimit.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
+
+import authRoutes from "./features/auth/routes/auth.routes.js";
 import workspaceRoutes from "./features/workspace/routes/workspace.routes.js";
 import workspaceInviteRoutes from "./features/workspace-members/routes/workspaceMember.routes.js";
 import projectRoutes from "./features/project/routes/project.routes.js";
 import taskRoutes from "./features/task/routes/task.routes.js";
 import commentRoutes from "./features/comment/routes/comment.routes.js";
 
+import { swaggerUi, swaggerSpec } from "./config/swagger.js";
+
 const app = express();
 
-app.use(helmet()); // middleware, який додає HTTP-заголовки безпеки.
+app.use(helmet());
 
 app.use(
   cors({
     origin: env.CLIENT_URL,
     credentials: true,
-    // Дозволяє браузеру надсилати та отримувати cookie.
   }),
 );
-app.use(globalRateLimit); // кожен HTTP-запит спочатку проходить через
-//  globalRateLimit, і лише потім потрапляє в маршрути.
+
+app.use(globalRateLimit);
 
 app.use(morgan("dev"));
-// підключає middleware, який виводить у консоль інформацію про
-//  кожен HTTP-запит у зручному для розробки форматі.
-// Дозволяє фронтенду з http://localhost:3000 надсилати HTTP-запити до цього
-//  Express-сервера (налаштовує CORS).
 
 app.use(express.json());
+
 app.use(cookieParser());
 
 app.get("/", (_, res) => {
   res.send("Roman Project Manager API");
 });
-// app.get() — створює маршрут для GET-запиту.
-// '/' — головний маршрут (http://localhost:5000/).
-// _ — об'єкт request, який тут не використовується.
-// res — об'єкт відповіді клієнту.
-// res.send() — відправляє текстову відповідь.
-// Тобто: коли користувач відкриває http://localhost:5000/, сервер
-// повертає текст
-// Roman Project Manager API.
 
-app.get("/health", (_, res) => {
+app.get(`/api/${API_VERSION}/health`, (_, res) => {
   res.status(200).json({
     success: true,
     status: "OK",
@@ -59,24 +51,34 @@ app.get("/health", (_, res) => {
   });
 });
 
-app.use("/api/auth", authRoutes);
-//Усі запити, які починаються з /api/auth, передавай у authRoutes
+/*
+|--------------------------------------------------------------------------
+| API v1 Routes
+|--------------------------------------------------------------------------
+*/
 
-app.use("/api/workspaces", workspaceRoutes);
-//Усі запити, які починаються з /api/workspaces, передавай у workspaceRoutes
+app.use(`/api/${API_VERSION}/auth`, authRoutes);
 
-app.use("/api/workspaces", workspaceInviteRoutes);
+app.use(`/api/${API_VERSION}/workspaces`, workspaceRoutes);
 
-app.use("/api/projects", projectRoutes);
+app.use(`/api/${API_VERSION}/workspaces`, workspaceInviteRoutes);
 
-app.use("/api/tasks", taskRoutes);
+app.use(`/api/${API_VERSION}/projects`, projectRoutes);
 
-app.use("/api", commentRoutes);
+app.use(`/api/${API_VERSION}/tasks`, taskRoutes);
 
-// Завжди останнім:
+app.use(`/api/${API_VERSION}`, commentRoutes);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+/*
+|--------------------------------------------------------------------------
+| Error Handler
+|--------------------------------------------------------------------------
+*/
+
+
+
 app.use(errorHandler);
 
 export default app;
-
-// 304 - Запитуваний ресурс не змінився з моменту останнього
-//  запиту, тому браузер може використати свою кешовану копію.

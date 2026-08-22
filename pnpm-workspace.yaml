@@ -1,11 +1,12 @@
 packages:
-    - 'apps/*'
-    - 'packages/*'
+  - 'apps/*'
+  - 'packages/*'
 allowBuilds:
-    # дозволяє pnpm виконувати postinstall/build-скрипти для цих пакетів (esbuild, sharp, unrs-resolver).
-    bcrypt: true
-    esbuild: true
-    sharp: true
-    unrs-resolver: true
+  # дозволяє pnpm виконувати postinstall/build-скрипти для цих пакетів (esbuild, sharp, unrs-resolver).
+  '@scarf/scarf': false
+  bcrypt: true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
 
 # Цей файл pnpm-workspace.yaml потрібен для того, щоб об'єднати кілька Node.js-проєктів в один workspace.Тепер pnpm знає, що це один великий проєкт із кількох пакетів.
