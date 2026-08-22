@@ -11,13 +11,17 @@ export class TaskController {
   };
 
   update = async (req: Request, res: Response) => {
-    const task = await this.service.update(req.params.id as string, req.body);
+    const task = await this.service.update(
+      req.params.id as string,
+      req.user.id,
+      req.body,
+    );
 
     res.json(task);
   };
 
   delete = async (req: Request, res: Response) => {
-    await this.service.delete(req.params.id as string);
+    await this.service.delete(req.params.id as string, req.user.id);
 
     res.json({
       message: "Task deleted",
@@ -40,6 +44,7 @@ export class TaskController {
 
     const task = await this.service.uploadAttachments(
       req.params.id as string,
+      req.user.id,
       attachments,
     );
 

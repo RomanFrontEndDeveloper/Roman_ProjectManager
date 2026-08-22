@@ -33,6 +33,7 @@ export class ProjectController {
   update = async (req: Request, res: Response) => {
     const project = await this.service.update(
       req.params.id as string,
+      req.user.id,
       req.body,
     );
 
@@ -40,7 +41,10 @@ export class ProjectController {
   };
 
   delete = async (req: Request, res: Response) => {
-    const result = await this.service.delete(req.params.id as string);
+   const result = await this.service.delete(
+  req.params.id as string,
+  req.user.id,
+);
 
     res.json(result);
   };
@@ -73,9 +77,10 @@ export class ProjectController {
 
   addMember = async (req: Request, res: Response) => {
     const project = await this.service.addMember(
-      req.params.id as string,
-      req.body.userId,
-    );
+  req.params.id as string,
+  req.user.id,
+  req.body.userId,
+);
 
     res.json(project);
   };

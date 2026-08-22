@@ -1,5 +1,8 @@
 import { checkOwnership } from "../../../shared/utils/checkOwnership.js";
+import { checkAdminPermission } from "../../../shared/utils/checkAdminPermission.js";
+
 import { WorkspaceRepository } from "../repository/WorkspaceRepository.js";
+
 import type { CreateWorkspaceDto } from "../dto/create-workspace.dto.js";
 import type { UpdateWorkspaceDto } from "../dto/update-workspace.dto.js";
 import type { UpdateSettingsDto } from "../dto/update-settings.dto.js";
@@ -69,7 +72,13 @@ export class WorkspaceService {
       throw new Error("Workspace not found");
     }
 
-    if (!checkOwnership(workspace.ownerId.toString(), currentUserId)) {
+    const isOwner = workspace.ownerId.toString() === currentUserId;
+
+    const currentMember = workspace.members.find(
+      (member) => member.userId.toString() === currentUserId,
+    );
+
+    if (!checkAdminPermission(isOwner, currentMember?.role)) {
       throw new Error("Forbidden");
     }
 
@@ -87,7 +96,13 @@ export class WorkspaceService {
       throw new Error("Workspace not found");
     }
 
-    if (!checkOwnership(workspace.ownerId.toString(), currentUserId)) {
+    const isOwner = workspace.ownerId.toString() === currentUserId;
+
+    const currentMember = workspace.members.find(
+      (member) => member.userId.toString() === currentUserId,
+    );
+
+    if (!checkAdminPermission(isOwner, currentMember?.role)) {
       throw new Error("Forbidden");
     }
 

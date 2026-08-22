@@ -14,32 +14,32 @@ export class TaskService {
     return this.repository.create(data);
   }
 
-  async update(
-    id: string,
-    currentUserId: string,
-    data: Partial<UpdateTaskDto>,
-  ) {
-    const task =
-      await this.repository.findById(id);
+ async update(
+  id: string,
+  currentUserId: string,
+  data: Partial<UpdateTaskDto>,
+) {
+  const task =
+    await this.repository.findById(id);
 
-    if (!task) {
-      throw new Error("Task not found");
-    }
-
-    const isOwner = checkOwnership(
-      task.assigneeId.toString(),
-      currentUserId,
-    );
-
-    if (!isOwner) {
-      throw new Error("Forbidden");
-    }
-
-    return this.repository.update(
-      id,
-      data,
-    );
+  if (!task) {
+    throw new Error("Task not found");
   }
+
+  const isOwner = checkOwnership(
+    task.assigneeId.toString(),
+    currentUserId,
+  );
+
+  if (!isOwner) {
+    throw new Error("Forbidden");
+  }
+
+  return this.repository.update(
+    id,
+    data,
+  );
+}
 
   async delete(
     id: string,

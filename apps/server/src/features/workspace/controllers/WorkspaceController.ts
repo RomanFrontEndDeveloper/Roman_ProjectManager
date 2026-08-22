@@ -32,13 +32,14 @@ export class WorkspaceController {
     const workspace = await this.workspaceService.update(
       req.params.id as string,
       req.body,
+      req.user.id,
     );
 
     res.json(workspace);
   };
 
   delete = async (req: Request, res: Response) => {
-    await this.workspaceService.delete(req.params.id as string);
+    await this.workspaceService.delete(req.params.id as string, req.user.id);
 
     res.status(204).send();
   };
@@ -48,6 +49,7 @@ export class WorkspaceController {
       req.params.workspaceId as string,
       req.params.userId as string,
       req.body.role as string,
+      req.user.id,
     );
 
     res.json({
@@ -55,16 +57,13 @@ export class WorkspaceController {
     });
   };
 
-  updateSettings = async (
-  req: Request,
-  res: Response
-) => {
-  const workspace =
-    await this.workspaceService.updateSettings(
+  updateSettings = async (req: Request, res: Response) => {
+    const workspace = await this.workspaceService.updateSettings(
       req.params.workspaceId as string,
-      req.body
+      req.body,
+      req.user.id,
     );
 
-  res.json(workspace);
-};
+    res.json(workspace);
+  };
 }
