@@ -1,9 +1,7 @@
 import mongoose from "mongoose";
 import http from "http";
-
 import app from "./app.js";
 import { env } from "./config/env.js";
-
 import { createSocketServer } from "./socket/socketServer.js";
 import { registerSocketEvents } from "./socket/events.js";
 

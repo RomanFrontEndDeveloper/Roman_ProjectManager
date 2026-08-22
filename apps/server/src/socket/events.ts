@@ -1,5 +1,13 @@
 import { Server } from "socket.io";
+
 import { createPrivateRoom } from "../features/chat/utils/createPrivateRoom.js";
+import { onlineUsers } from "./onlineUsers.js";
+
+interface WorkspaceMessagePayload {
+  workspaceId: string;
+  senderId: string;
+  message: string;
+}
 
 interface PrivateMessagePayload {
   senderId: string;
@@ -7,34 +15,41 @@ interface PrivateMessagePayload {
   message: string;
 }
 
+interface PrivateChatPayload {
+  senderId: string;
+  receiverId: string;
+}
+
+interface TypingPayload {
+  workspaceId: string;
+  userId: string;
+}
+
 export const registerSocketEvents = (io: Server) => {
   io.on("connection", (socket) => {
-    //Користувач підключився
     console.log(`User connected: ${socket.id}`);
 
-    socket.on(
-      "join-workspace", //Користувач заходить у Workspace
-      (workspaceId: string) => {
-        socket.join(workspaceId);
+    // =====================================
+    // Workspace Chat
+    // =====================================
 
-        console.log(`Socket ${socket.id} joined ${workspaceId}`);
-      },
-    ); //
+    socket.on("join-workspace", (workspaceId: string) => {
+      socket.join(workspaceId);
 
-    socket.on(
-      "send-message", //Надсилання повідомлення
-      (data) => {
-        io.to(data.workspaceId).emit("new-message", data);
-      },
-    );
-
-    socket.on("disconnect", () => {
-      console.log(`User disconnected: ${socket.id}`);
+      console.log(`Socket ${socket.id} joined ${workspaceId}`);
     });
+
+    socket.on("send-message", (data: WorkspaceMessagePayload) => {
+      io.to(data.workspaceId).emit("new-message", data);
+    });
+
+    // =====================================
+    // Private Chat
+    // =====================================
 
     socket.on(
       "join-private-chat",
-      ({ senderId, receiverId }: { senderId: string; receiverId: string }) => {
+      ({ senderId, receiverId }: PrivateChatPayload) => {
         const room = createPrivateRoom(senderId, receiverId);
 
         socket.join(room);
@@ -48,8 +63,50 @@ export const registerSocketEvents = (io: Server) => {
 
       io.to(room).emit("new-private-message", data);
     });
+
+    // =====================================
+    // Online Users
+    // =====================================
+
+    socket.on("user-online", (userId: string) => {
+      onlineUsers.set(userId, socket.id);
+
+      io.emit("online-users", Array.from(onlineUsers.keys()));
+
+      console.log(`User ${userId} online`);
+    });
+
+    socket.on("get-online-users", () => {
+      socket.emit("online-users", Array.from(onlineUsers.keys()));
+    });
+
+    // =====================================
+    // Typing Indicator
+    // =====================================
+
+    socket.on("typing-start", ({ workspaceId, userId }: TypingPayload) => {
+      socket.to(workspaceId).emit("user-typing", userId);
+    });
+
+    socket.on("typing-stop", ({ workspaceId, userId }: TypingPayload) => {
+      socket.to(workspaceId).emit("user-stop-typing", userId);
+    });
+
+    // =====================================
+    // Disconnect
+    // =====================================
+
+    socket.on("disconnect", () => {
+      for (const [userId, socketId] of onlineUsers.entries()) {
+        if (socketId === socket.id) {
+          onlineUsers.delete(userId);
+          break;
+        }
+      }
+
+      io.emit("online-users", Array.from(onlineUsers.keys()));
+
+      console.log(`User disconnected: ${socket.id}`);
+    });
   });
 };
-
-// Цей файл відповідає за реальну комунікацію через Socket.IO: підключення користувачів,
-//  вхід у workspace, відправку повідомлень та відключення користувачів
