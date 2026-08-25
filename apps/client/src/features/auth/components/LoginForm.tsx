@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../schemas/loginSchema";
 
 type LoginFormData = z.infer<typeof loginSchema>;
+// "Створи TypeScript-тип LoginFormData на основі Zod-схеми loginSchema."
 
 export function LoginForm() {
   const {
