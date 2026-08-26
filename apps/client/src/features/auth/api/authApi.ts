@@ -10,6 +10,16 @@ export const login = async (data: { email: string; password: string }) => {
   return response.data;
 };
 
+export const register = async (data: {
+  name: string;
+  email: string;
+  password: string;
+}) => {
+  const response = await api.post("/v1/auth/register", data);
+
+  return response.data;
+};
+
 export const getMe = async () => {
   const response = await api.get("/v1/auth/me");
 

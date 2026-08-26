@@ -9,9 +9,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider
-        attribute="class"
+        attribute="class" // Коли змінюється тема, 
+        // додавай назву теми як CSS-клас до <html> (tailwind)
         defaultTheme="light"
-        enableSystem={false}
+        enableSystem={false} // Не використовуй системну тему Windows як джерело теми.
       >
         {children}
       </ThemeProvider>

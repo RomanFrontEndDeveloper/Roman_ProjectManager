@@ -1,13 +1,16 @@
 import axios from "axios";
 
 export const api = axios.create({
+  // створюємо власний Axios-клієнт.
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
+  withCredentials: true, // Дозволяй браузеру
+  // передавати cookies у запитах і приймати cookies з відповіді
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json", //відправляється JSON
   },
 });
 
+// interceptor: Перед кожним HTTP-запитом через api виконай ось цей код
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
 
@@ -15,7 +18,7 @@ api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
-  return config;
+  return config; // config — це конфігурація поточного HTTP-запиту.
 });
 
 // Frontend Axios:
