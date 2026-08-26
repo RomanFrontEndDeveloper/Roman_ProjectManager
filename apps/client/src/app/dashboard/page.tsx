@@ -1,16 +1,11 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-
-import { getMe } from "@/features/auth/api/authApi";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 
 import { Card } from "@/components/ui/Card";
 
 export default function DashboardPage() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["auth", "me"],
-    queryFn: getMe,
-  });
+  const { data, isLoading, isError } = useCurrentUser();
 
   if (isLoading) {
     return <p>Loading...</p>;

@@ -1,15 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getMe } from "../api/authApi";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 export function AuthStatus() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["me"],
-    queryFn: getMe,
-    retry: false,
-  });
-
+  const { data, isLoading, isError } = useCurrentUser();
   if (isLoading) {
     return <p>Loading...</p>;
   }
