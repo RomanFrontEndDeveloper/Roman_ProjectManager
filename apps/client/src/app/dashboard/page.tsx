@@ -1,30 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
 import { getMe } from "@/features/auth/api/authApi";
+
 import { Card } from "@/components/ui/Card";
 
-type User = {
-  name: string;
-  email: string;
-  role: string;
-};
-
 export default function DashboardPage() {
-  const [user, setUser] = useState<User | null>(null);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["auth", "me"],
+    queryFn: getMe,
+  });
 
-  useEffect(() => {
-    const loadUser = async () => {
-      const data = await getMe();
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
-      setUser(data.user);
-    };
+  if (isError) {
+    return <p>Failed to load user</p>;
+  }
 
-    loadUser();
-  }, []);
+  const user = data?.user;
 
   if (!user) {
-    return <p>Loading...</p>;
+    return <p>User not found</p>;
   }
 
   return (
