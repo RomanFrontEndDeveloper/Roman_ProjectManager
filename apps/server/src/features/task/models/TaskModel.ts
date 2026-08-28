@@ -12,6 +12,7 @@ export interface ITask {
   projectId: Types.ObjectId;
   assigneeId: Types.ObjectId;
   status: TaskStatus;
+  order: number;
   labels: string[];
   priority: TaskPriority;
   dueDate?: Date;
@@ -58,6 +59,11 @@ const taskSchema = new Schema<ITask>(
       type: String,
       enum: ["todo", "in_progress", "done"],
       default: "todo",
+    },
+
+    order: {
+      type: Number,
+      default: 0,
     },
 
     labels: {

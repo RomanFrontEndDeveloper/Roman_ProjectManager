@@ -1,11 +1,12 @@
 import type { Request, Response } from "express";
 import { TaskService } from "../services/TaskService.js";
+import type { ReorderTaskDto } from "../dto/reorder-task.dto.js";
 
 export class TaskController {
   private service = new TaskService();
 
   create = async (req: Request, res: Response) => {
-    const task = await this.service.create(req.body);
+    const task = await this.service.create(req.body, req.user.id);
 
     res.status(201).json(task);
   };
@@ -49,6 +50,14 @@ export class TaskController {
     );
 
     res.json(task);
+  };
+
+  reorder = async (req: Request, res: Response) => {
+    const data = req.body as ReorderTaskDto;
+
+    const result = await this.service.reorder(data, req.user.id);
+
+    res.json(result);
   };
 
   getAll = async (req: Request, res: Response) => {

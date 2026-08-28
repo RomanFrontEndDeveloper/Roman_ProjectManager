@@ -1,5 +1,3 @@
-import type { TaskPriority } from "../types/task-priority.js";
-
 export interface UpdateTaskDto {
   title?: string;
 
@@ -14,4 +12,6 @@ export interface UpdateTaskDto {
   priority?: TaskPriority;
 
   dueDate?: Date;
+
+  order?: number;
 }

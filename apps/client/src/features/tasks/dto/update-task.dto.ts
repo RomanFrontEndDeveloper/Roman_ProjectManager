@@ -6,4 +6,5 @@ export interface UpdateTaskDto {
   labels?: string[];
   priority?: "low" | "medium" | "high";
   dueDate?: string;
+  order?: number;
 }

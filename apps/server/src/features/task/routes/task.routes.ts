@@ -11,6 +11,8 @@ const taskController = new TaskController();
 
 router.post("/", authMiddleware, taskController.create);
 
+router.patch("/reorder", authMiddleware, taskController.reorder);
+
 router.patch("/:id", authMiddleware, taskController.update);
 
 router.delete("/:id", authMiddleware, taskController.delete);
