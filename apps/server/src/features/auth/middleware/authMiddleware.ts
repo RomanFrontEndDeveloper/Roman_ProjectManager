@@ -1,52 +1,52 @@
-import type { Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+	import type { Response, NextFunction } from 'express';
+	import jwt from 'jsonwebtoken';
 
-import { env } from '../../../config/env.js';
-import type { Request } from "express";
+	import { env } from '../../../config/env.js';
+	import type { Request } from "express";
 
-export const authMiddleware = (
-	req: Request,
-	res: Response,
-	next: NextFunction,
-) => {
-	try {
-		const authHeader = req.headers.authorization;
+	export const authMiddleware = (
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	) => {
+		try {
+			const authHeader = req.headers.authorization;
 
-		if (!authHeader) {
+			if (!authHeader) {
+				return res.status(401).json({
+					success: false,
+					message: 'Unauthorized',
+				});
+			}
+
+			if (!authHeader.startsWith('Bearer ')) {
+				return res.status(401).json({
+					success: false,
+					message: 'Unauthorized',
+				});
+			}
+
+			const token = authHeader.split(' ')[1];
+
+			const decoded = jwt.verify(token, env.JWT_SECRET) as {
+				id: string; // «Вважай, що результат jwt.verify() має поле id, яке є рядком».
+			};
+			// 	decoded = {
+			//  id: "12345hgbhgvhg6"
+			//  }
+
+			req.user = {
+				id: decoded.id,
+			};
+			// req.user = {
+			//   id: "68a123456789..."
+			// };
+
+			next();
+		} catch {
 			return res.status(401).json({
 				success: false,
-				message: 'Unauthorized',
+				message: 'Invalid token',
 			});
 		}
-
-		if (!authHeader.startsWith('Bearer ')) {
-			return res.status(401).json({
-				success: false,
-				message: 'Unauthorized',
-			});
-		}
-
-		const token = authHeader.split(' ')[1];
-
-		const decoded = jwt.verify(token, env.JWT_SECRET) as {
-			id: string; // «Вважай, що результат jwt.verify() має поле id, яке є рядком».
-		};
-        // 	decoded = {
-        //  id: "12345hgbhgvhg6"
-        //  }
-
-		req.user = {
-			id: decoded.id,
-		};
-        // req.user = {
-        //   id: "68a123456789..."
-        // };
-
-		next();
-	} catch {
-		return res.status(401).json({
-			success: false,
-			message: 'Invalid token',
-		});
-	}
-};
+	};

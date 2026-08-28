@@ -6,56 +6,40 @@ import { TaskRepository } from "../repository/TaskRepository.js";
 import { checkOwnership } from "../../../shared/utils/checkOwnership.js";
 
 export class TaskService {
-  constructor(
-    private repository = new TaskRepository(),
-  ) {}
+  constructor(private repository = new TaskRepository()) {}
 
   async create(data: CreateTaskDto) {
     return this.repository.create(data);
   }
 
- async update(
-  id: string,
-  currentUserId: string,
-  data: Partial<UpdateTaskDto>,
-) {
-  const task =
-    await this.repository.findById(id);
-
-  if (!task) {
-    throw new Error("Task not found");
-  }
-
-  const isOwner = checkOwnership(
-    task.assigneeId.toString(),
-    currentUserId,
-  );
-
-  if (!isOwner) {
-    throw new Error("Forbidden");
-  }
-
-  return this.repository.update(
-    id,
-    data,
-  );
-}
-
-  async delete(
+  async update(
     id: string,
     currentUserId: string,
+    data: Partial<UpdateTaskDto>,
   ) {
-    const task =
-      await this.repository.findById(id);
+    const task = await this.repository.findById(id);
 
     if (!task) {
       throw new Error("Task not found");
     }
 
-    const isOwner = checkOwnership(
-      task.assigneeId.toString(),
-      currentUserId,
-    );
+    const isOwner = checkOwnership(task.assigneeId.toString(), currentUserId);
+
+    if (!isOwner) {
+      throw new Error("Forbidden");
+    }
+
+    return this.repository.update(id, data);
+  }
+
+  async delete(id: string, currentUserId: string) {
+    const task = await this.repository.findById(id);
+
+    if (!task) {
+      throw new Error("Task not found");
+    }
+
+    const isOwner = checkOwnership(task.assigneeId.toString(), currentUserId);
 
     if (!isOwner) {
       throw new Error("Forbidden");
@@ -65,8 +49,7 @@ export class TaskService {
   }
 
   async getById(id: string) {
-    const task =
-      await this.repository.findById(id);
+    const task = await this.repository.findById(id);
 
     if (!task) {
       throw new Error("Task not found");
@@ -83,25 +66,22 @@ export class TaskService {
       publicId: string;
     }[],
   ) {
-    const task =
-      await this.repository.findById(id);
+    const task = await this.repository.findById(id);
 
     if (!task) {
       throw new Error("Task not found");
     }
 
-    const isOwner = checkOwnership(
-      task.assigneeId.toString(),
-      currentUserId,
-    );
+    const isOwner = checkOwnership(task.assigneeId.toString(), currentUserId);
 
     if (!isOwner) {
       throw new Error("Forbidden");
     }
 
-    return this.repository.uploadAttachments(
-      id,
-      attachments,
-    );
+    return this.repository.uploadAttachments(id, attachments);
+  }
+
+  async getAll() {
+    return this.repository.findAll();
   }
 }

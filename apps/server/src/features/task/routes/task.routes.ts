@@ -23,4 +23,6 @@ router.post(
   taskController.uploadAttachments,
 );
 
+router.get("/", authMiddleware, taskController.getAll);
+
 export default router;

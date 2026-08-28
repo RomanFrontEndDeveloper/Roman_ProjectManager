@@ -2,9 +2,10 @@
 
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
+import type { TaskStatus } from "../types/task";
 
 type KanbanColumnProps = {
-  id: string;
+  id: TaskStatus;
   title: string;
   taskIds: string[];
   children: React.ReactNode;

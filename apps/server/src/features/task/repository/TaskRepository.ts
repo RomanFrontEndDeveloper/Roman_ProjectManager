@@ -33,4 +33,10 @@ export class TaskRepository {
       { new: true },
     );
   }
+
+  async findAll() {
+    return TaskModel.find().sort({
+      createdAt: -1,
+    });
+  }
 }

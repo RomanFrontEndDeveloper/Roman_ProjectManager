@@ -50,4 +50,10 @@ export class TaskController {
 
     res.json(task);
   };
+
+  getAll = async (req: Request, res: Response) => {
+    const tasks = await this.service.getAll();
+
+    res.json(tasks);
+  };
 }

@@ -1,98 +1,39 @@
 "use client";
 
-import { useState } from "react";
-
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 
 import { KanbanColumn } from "./KanbanColumn";
 import { TaskCard } from "./TaskCard";
 
-const initialTasks = [
-  {
-    id: "1",
-    title: "Create project",
-    status: "todo",
-  },
-  {
-    id: "2",
-    title: "Build dashboard",
-    status: "in-progress",
-  },
-  {
-    id: "3",
-    title: "Finish authentication",
-    status: "done",
-  },
-  {
-    id: "4",
-    title: "Create login page",
-    status: "todo",
-  },
-  {
-    id: "5",
-    title: "Create register page",
-    status: "todo",
-  },
-  {
-    id: "6",
-    title: "Connect API",
-    status: "in-progress",
-  },
-  {
-    id: "7",
-    title: "Add React Query",
-    status: "in-progress",
-  },
-  {
-    id: "8",
-    title: "Create project API",
-    status: "todo",
-  },
-  {
-    id: "9",
-    title: "Create project form",
-    status: "todo",
-  },
-  {
-    id: "10",
-    title: "Implement validation",
-    status: "in-progress",
-  },
-  {
-    id: "11",
-    title: "Test authentication",
-    status: "done",
-  },
-  {
-    id: "12",
-    title: "Test Kanban drag and drop",
-    status: "done",
-  },
-  {
-    id: "13",
-    title: "Fix responsive layout",
-    status: "in-progress",
-  },
-  {
-    id: "14",
-    title: "Add error handling",
-    status: "done",
-  },
-  {
-    id: "15",
-    title: "Prepare production build",
-    status: "todo",
-  },
-];
+import { useTasks } from "../hooks/useTasks";
+import { useUpdateTask } from "../hooks/useUpdateTask";
+import type { TaskStatus } from "../types/task";
 
 export function KanbanBoard() {
-  const [tasks, setTasks] = useState(initialTasks);
+  const { data: tasks, isLoading, error } = useTasks();
+  const updateTask = useUpdateTask();
 
-  const todoTasks = tasks.filter((task) => task.status === "todo");
+  if (isLoading) {
+    return <p>Loading tasks...</p>;
+  }
 
-  const inProgressTasks = tasks.filter((task) => task.status === "in-progress");
+  if (error) {
+    return <p>Failed to load tasks</p>;
+  }
 
-  const doneTasks = tasks.filter((task) => task.status === "done");
+  if (!tasks || tasks.length === 0) {
+    return <p>No tasks found</p>;
+  }
+
+  const taskList = tasks;
+
+  const todoTasks = taskList.filter((task) => task.status === "todo");
+
+  const inProgressTasks = taskList.filter(
+    (task) => task.status === "in_progress",
+  );
+
+  const doneTasks = taskList.filter((task) => task.status === "done");
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -101,25 +42,28 @@ export function KanbanBoard() {
       return;
     }
 
-    setTasks((currentTasks) => {
-      const overTask = currentTasks.find((task) => task.id === over.id);
+    const activeTask = taskList.find((task) => task._id === active.id);
 
-      const newStatus = overTask
-        ? overTask.status
-        : (over.id as "todo" | "in-progress" | "done");
+    if (!activeTask) {
+      return;
+    }
 
-      return currentTasks.map((task) =>
-        task.id === active.id
-          ? {
-              ...task,
-              status: newStatus,
-            }
-          : task,
-      );
+    const overTask = taskList.find((task) => task._id === over.id);
+
+    const newStatus: TaskStatus = overTask
+      ? overTask.status
+      : (over.id as TaskStatus);
+
+    if (activeTask.status === newStatus) {
+      return;
+    }
+
+    updateTask.mutate({
+      id: activeTask._id,
+      data: {
+        status: newStatus,
+      },
     });
-    // Візьми поточні задачі. З'ясуй, куди ми кинули картку. Визнач новий статус. 
-    // Пройди по всіх задачах і тільки для тієї задачі, яку ми перетягували, зміни
-    //  status. Поверни новий масив задач.
   }
 
   return (
@@ -128,30 +72,30 @@ export function KanbanBoard() {
         <KanbanColumn
           id="todo"
           title="TODO"
-          taskIds={todoTasks.map((task) => task.id)}
+          taskIds={todoTasks.map((task) => task._id)}
         >
           {todoTasks.map((task) => (
-            <TaskCard key={task.id} id={task.id} title={task.title} />
+            <TaskCard key={task._id} id={task._id} title={task.title} />
           ))}
         </KanbanColumn>
 
         <KanbanColumn
-          id="in-progress"
+          id="in_progress"
           title="IN PROGRESS"
-          taskIds={inProgressTasks.map((task) => task.id)}
+          taskIds={inProgressTasks.map((task) => task._id)}
         >
           {inProgressTasks.map((task) => (
-            <TaskCard key={task.id} id={task.id} title={task.title} />
+            <TaskCard key={task._id} id={task._id} title={task.title} />
           ))}
         </KanbanColumn>
 
         <KanbanColumn
           id="done"
           title="DONE"
-          taskIds={doneTasks.map((task) => task.id)}
+          taskIds={doneTasks.map((task) => task._id)}
         >
           {doneTasks.map((task) => (
-            <TaskCard key={task.id} id={task.id} title={task.title} />
+            <TaskCard key={task._id} id={task._id} title={task.title} />
           ))}
         </KanbanColumn>
       </div>
